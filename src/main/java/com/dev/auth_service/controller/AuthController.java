@@ -1,13 +1,23 @@
 package com.dev.auth_service.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.dev.auth_service.service.AuthenticationService;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
 
-    @GetMapping("/login")
-    public String hello(){
-        return "hello world";
+    private final AuthenticationService authenticationService;
+
+    public AuthController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
+
+
+    @PostMapping("/login")
+    public String login(Authentication authentication){
+        return authenticationService.authenticate(authentication);
+    }
+
 }
