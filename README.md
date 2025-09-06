@@ -9,10 +9,10 @@ Faz parte do ecossistema de microsserviços do projeto Elevare Commerce.
 - Spring Security
 - JWT (JSON Web Token)
 - Maven
-- Docker (opcional para deploy)
+
 
 ## Funcionalidades
-- Autenticação de credenciais (/login)
+- Autenticação de credenciais (auth/login)
 - Geração e validação de tokens JWT
 - Integração com outros microsserviços via JWT
 
