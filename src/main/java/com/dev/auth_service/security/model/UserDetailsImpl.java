@@ -1,5 +1,6 @@
-package com.dev.auth_service.user;
+package com.dev.auth_service.security.model;
 
+import com.dev.auth_service.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,12 +9,12 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class UserAuthenticated implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
 
     private final User user;
 
-    public UserAuthenticated(User user) {
+    public UserDetailsImpl(User user) {
         this.user = user;
     }
 
@@ -24,13 +25,14 @@ public class UserAuthenticated implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getSenha();
+        return user.getUserPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getUserEmail();
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -51,4 +53,5 @@ public class UserAuthenticated implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

@@ -1,25 +1,31 @@
 # Auth Service
 
-Microsserviço responsável por autenticação e autorização de usuários utilizando Spring Boot, Spring Security e JWT.
-Faz parte do ecossistema de microsserviços do projeto Elevare Commerce.
+Microservice responsible for user authentication and authorization using Spring Boot, Spring Security, and JWT. 
+Part of the Elevare Commerce microservices ecosystem.
 
-## Tecnologias
+[Read in portuguese](README-PT.md)
+
+## Technologies
 - Java 17+
 - Spring Boot 3
 - Spring Security
+- Spring Data JPA 
+- PostgreSQL 
 - JWT (JSON Web Token)
+- OAuth2 Resource Server 
 - Maven
 
+## Features
+- Credential authentication (/auth/login)
+- User registration (/auth/register)
+- JWT token generation and validation 
 
-## Funcionalidades
-- Autenticação de credenciais (auth/login)
-- Geração e validação de tokens JWT
-- Integração com outros microsserviços via JWT
+## Main Endpoints
+| Método | Endpoint            | Descrição           |
+| ------ | ------------------- |---------------------|
+| POST   | `/auth/login`       | Perform login       |
+| POST   | `/auth/register`    | Register a new user |
 
-## Próximos passos
-- Registro de usuários
-- Integração com outros microsserviços
-- Implementação de refresh token
-- Documentação com Swagger/OpenAPI
-
-
+## Next Steps
+- Implement refresh token 
+- Add API documentation with Swagger/OpenAPI

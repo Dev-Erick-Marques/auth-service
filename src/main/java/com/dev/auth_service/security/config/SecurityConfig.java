@@ -1,4 +1,4 @@
-package com.dev.auth_service.config;
+package com.dev.auth_service.security.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -38,9 +38,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login")
-                        .permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/auth/***")
+                        .permitAll().anyRequest().permitAll()
+                        )
                 .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(
                         auth -> auth.jwt(Customizer.withDefaults()))

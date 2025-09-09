@@ -1,5 +1,6 @@
-package com.dev.auth_service.service;
+package com.dev.auth_service.security.jwt;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -19,7 +20,7 @@ public class TokenService {
     Instant now = Instant.now();
     Long expiry = 1000*60*60L;
 
-    public String generationToken(Authentication authentication){
+    public String generateToken(Authentication authentication, String uuid){
         String scopes = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
@@ -28,7 +29,7 @@ public class TokenService {
                 .issuer("auth-service")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiry))
-                .subject(authentication.getName())
+                .subject(uuid)
                 .claim("scope",scopes)
                 .build();
     return  encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
