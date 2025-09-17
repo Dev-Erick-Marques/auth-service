@@ -47,8 +47,15 @@ A aplicação utiliza JWT assinado com chaves RSA.
                    └── private.key 
 
 ````
-⚠️ Do not share your private key or the credentials in ``application.properties``.
+> ⚠️ Não compartilhe sua chave privada nem as credenciais do ``application.properties``.
 
+---
+## Credenciais Superadmin 
+Para sua conveniência, um usuário **superadmin** é pré-configurado, para que você possa efetuar login sem criar uma conta manualmente.
+- **Email:** `superadmin@auth.com`
+- **Password:** `qCLU4dYfj6IsLyK5fE8h`
+
+> Essas credenciais são pré-definidas para fins de teste e desenvolvimento.
 ---
 
 ## Endpoints Principais
@@ -57,8 +64,9 @@ A aplicação utiliza JWT assinado com chaves RSA.
 | ------ | -------------- | --------------------- |
 | POST   | `/login`       | Realizar login        |
 | POST   | `/register`    | Cadastrar novo usuário|
-
-## Exemplo de Login
+___
+## Exemplo de uso
+### login com superadmin
 1. POST ``/auth/login``
    Content-Type: application/json
 ````

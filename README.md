@@ -21,12 +21,12 @@ Before starting the application, the following configurations are required:
 ### Database
 1. Create a database in your DBMS:
  ```
- CREATE DATABASE user_service;
+ CREATE DATABASE auth_service;
  ```
 2. Update the ``application.properties`` file with your ``credentials``.
 
 ````
-   spring.datasource.url=jdbc:postgresql://localhost:5432/user_service
+   spring.datasource.url=jdbc:postgresql://localhost:5432/auth_service
    spring.datasource.username=your_username
    spring.datasource.password=your_password
 ````
@@ -46,8 +46,8 @@ The application uses JWT signed with RSA key pairs.
                    └── private.key 
 
 ````
-⚠️ Não compartilhe sua chave privada nem as credenciais do ``application.properties``.
 
+> ⚠️ Do not share your private key or the credentials in ``application.properties``.
 ---
 
 ## Superadmin Credentials
