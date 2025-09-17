@@ -1,7 +1,7 @@
-package com.dev.auth_service.security.service;
+package com.dev.auth_service.security;
 
-import com.dev.auth_service.repository.UserRepository;
-import com.dev.auth_service.security.model.UserDetailsImpl;
+import com.dev.auth_service.domain.repository.UserRepository;
+import com.dev.auth_service.domain.models.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +15,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return userRepository.findByUserEmail(email)
-                .map(UserDetailsImpl::new)
+        User user =  userRepository.findByUserEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new UserDetailsImpl(user);
     }
 
 }

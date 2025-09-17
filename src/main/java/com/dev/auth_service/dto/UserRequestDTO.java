@@ -1,12 +1,17 @@
 package com.dev.auth_service.dto;
 
-import com.dev.auth_service.user.User;
-import java.util.UUID;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.NonNull;
 
+public record UserRequestDTO(
+        @NotNull(message = "Must be not null")
+        @Email(message = "Must be a valid email")
+        String email,
 
-public record UserRequestDTO(String email, UUID uuid) {
-    public UserRequestDTO(User user) {
-        this(user.getUserEmail(), user.getUserId());
-    }
+        @NonNull
+        String password,
+        @NotNull
+        String username) {
 }
-

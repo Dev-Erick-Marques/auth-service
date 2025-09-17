@@ -1,23 +1,22 @@
 package com.dev.auth_service.service;
 
-import com.dev.auth_service.dto.UserDTO;
+import com.dev.auth_service.domain.models.Role;
+import com.dev.auth_service.domain.repository.RoleRepository;
 import com.dev.auth_service.dto.UserRequestDTO;
-import com.dev.auth_service.exceptions.ClientErrorException;
-import com.dev.auth_service.exceptions.DatabaseInconsistencyException;
-import com.dev.auth_service.exceptions.ServerErrorException;
-import com.dev.auth_service.repository.UserRepository;
-import com.dev.auth_service.security.jwt.TokenService;
-import com.dev.auth_service.user.User;
+import com.dev.auth_service.dto.UserResponseDTO;
+import com.dev.auth_service.exceptions.exceptions.ClientErrorException;
+import com.dev.auth_service.domain.repository.UserRepository;
+import com.dev.auth_service.security.TokenService;
+import com.dev.auth_service.domain.models.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -31,38 +30,37 @@ public class UserService {
     private AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
-    public String authenticate(UserDTO dto){
+    public String authenticate(UserRequestDTO dto){
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
         Authentication authentication = authenticationManager.authenticate(auth);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return jwtService.generateToken(auth, getUserId(dto.email()));
-    }
-    public String getUserId(String email){
-        Optional<String> uuid = userRepository.findByUserEmail(email)
-                .map(User::getUserId)
-                .map(String::valueOf);
-        return uuid.orElse("");
+        return jwtService.generateToken(authentication);
     }
 
     @Transactional
-    public UserRequestDTO register(UserDTO dto){
+    public UserResponseDTO register(UserRequestDTO dto){
         if (userRepository.existsByUserEmail(dto.email())){
             throw new ClientErrorException("Email already registered", HttpStatus.CONFLICT);
         }
-        try {
-            User user = new User();
-            user.setUserPassword(passwordEncoder.encode(dto.password()));
-            user.setUserEmail(dto.email());
-            return new UserRequestDTO(userRepository.save(user));
-        } catch (Exception e) {
-            throw new ServerErrorException("Failed to register user", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            User user = new User(
+                    dto.email(),
+                    passwordEncoder.encode(dto.password()),
+                    dto.username()
+            );
+            Role role = roleRepository.findByRoleName("ROLE_USER")
+                    .orElseThrow(() -> new ClientErrorException("Role 'ROLE_USER' not found",
+                            HttpStatus.NOT_FOUND));
+            user.getRoles().add(role);
+            return new UserResponseDTO(userRepository.save(user));
 
     }
 }

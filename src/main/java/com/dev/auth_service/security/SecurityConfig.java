@@ -1,8 +1,9 @@
-package com.dev.auth_service.security.config;
+package com.dev.auth_service.security;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,14 +33,14 @@ public class SecurityConfig {
     private RSAPublicKey publicKey;
     @Value("${rsa.private.key}")
     private RSAPrivateKey privateKey;
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/***")
-                        .permitAll().anyRequest().permitAll()
+                        .requestMatchers("/auth/**","/actuator/health").permitAll().anyRequest().permitAll()
                         )
                 .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(

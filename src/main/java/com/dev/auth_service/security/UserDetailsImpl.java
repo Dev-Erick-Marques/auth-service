@@ -1,16 +1,15 @@
-package com.dev.auth_service.security.model;
+package com.dev.auth_service.security;
 
-import com.dev.auth_service.user.User;
+import com.dev.auth_service.domain.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.UUID;
 
 
 public class UserDetailsImpl implements UserDetails {
-
 
     private final User user;
 
@@ -20,7 +19,9 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("USER"));
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .toList();
     }
 
     @Override
@@ -30,9 +31,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserEmail();
+        return user.getUsername();
     }
 
+    public UUID getUserId(){
+        return user.getUserId();
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -51,7 +55,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !user.getIsDeleted();
     }
 
 }
