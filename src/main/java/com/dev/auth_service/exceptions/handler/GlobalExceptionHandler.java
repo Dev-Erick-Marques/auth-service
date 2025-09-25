@@ -1,9 +1,9 @@
 package com.dev.auth_service.exceptions.handler;
 
 import com.dev.auth_service.exceptions.dto.ErrorDTO;
-import com.dev.auth_service.exceptions.exceptions.ClientErrorException;
 import com.dev.auth_service.exceptions.dto.ErrorListDTO;
 import com.dev.auth_service.exceptions.dto.FieldErrorDTO;
+import com.dev.auth_service.exceptions.exceptions.RoleNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 
 @RestControllerAdvice
-public class GlobalHandlerException {
+public class GlobalExceptionHandler {
     public <T> ResponseEntity<T> buildResponse(HttpStatus status, T body){
         return ResponseEntity.status(status).body(body);
 
     }
-    @ExceptionHandler(ClientErrorException.class)
-    public ResponseEntity<ErrorDTO> clientErrorHandler(ClientErrorException ex, HttpServletRequest request){
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ErrorDTO> clientErrorHandler(RoleNotFoundException ex, HttpServletRequest request){
        return buildResponse(ex.getMessage(),ex.getStatus(),request.getRequestURI());
 
     }
@@ -49,4 +49,5 @@ public class GlobalHandlerException {
         ErrorListDTO response = ErrorListDTO. of(message, status,errors, path);
         return buildResponse(status,response);
     }
+
 }
