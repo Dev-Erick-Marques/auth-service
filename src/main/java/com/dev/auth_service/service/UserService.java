@@ -1,61 +1,14 @@
 package com.dev.auth_service.service;
 
-import com.dev.auth_service.domain.models.Role;
-import com.dev.auth_service.domain.models.User;
-import com.dev.auth_service.domain.repository.RoleRepository;
-import com.dev.auth_service.domain.repository.UserRepository;
 import com.dev.auth_service.dto.UserRequestDTO;
 import com.dev.auth_service.dto.UserResponseDTO;
-import com.dev.auth_service.security.TokenService;
-import com.dev.auth_service.service.validator.UserValidator;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Service
-@AllArgsConstructor
-public class UserService {
+public interface UserService {
+    void deleteUserById(UUID id);
+    void restoreUserById(UUID id);
+    UserResponseDTO register(UserRequestDTO dto);
+    String authenticate(UserRequestDTO dto);
 
-    private final TokenService jwtService;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserValidator userValidator;
-
-
-
-    public String authenticate(UserRequestDTO dto){
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
-        Authentication authentication = authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return jwtService.generateToken(authentication);
-    }
-
-    @Transactional
-    public UserResponseDTO register(UserRequestDTO dto){
-
-            User user = new User(
-                    dto.email(),passwordEncoder.encode(dto.password()), dto.username()
-            );
-            Role role = userValidator.validateRole("ROLE_USER");
-            user.getRoles().add(role);
-            return new UserResponseDTO(userRepository.save(user));
-
-    }
-    public void deleteUserById(UUID id){
-        userRepository.softDeleteById(id, true);
-    }
-    public void restoreUserById(UUID id){
-        userRepository.softDeleteById(id, false);
-    }
 }

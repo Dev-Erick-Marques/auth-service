@@ -1,6 +1,5 @@
 package com.dev.auth_service.controller;
 
-import com.dev.auth_service.domain.models.User;
 import com.dev.auth_service.dto.TokenDTO;
 import com.dev.auth_service.dto.UserRequestDTO;
 import com.dev.auth_service.dto.UserResponseDTO;
